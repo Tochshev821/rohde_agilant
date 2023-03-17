@@ -667,18 +667,38 @@ float feedback_agilant_float(int s)
         return myfl;
 
 }
-void feedback_agilant_buf(int s)
+int feedback_agilant_buf(int s)
 {
-        char buffer[1024];
+        char buffer[25];
+        char a = 'A';
         /* читаем ответ сервера */
         fd_set readmask;
         fd_set allreads;
 
-        recv(s, buffer, 1024, 0);
+        recv(s, buffer, 25, 0);
         //   send( s, "*cls\n", 24, 0);
-        //char *token = strtok(buffer, " ");
-        //printf("%s",buffer);
-        float myfl = atof(buffer); // explicit type casting
+        char *token = strtok(buffer, " ");
+        printf("%c%c%c%c%c%c%c\n",buffer[0],buffer[1],buffer[2],buffer[3],buffer[4],buffer[5],buffer[6]);
+        if(buffer[0]=='A' && buffer[1]=='g' && buffer[2]=='i')
+        {
+            printf("AGILENT %d\n",1);
+            return 1;
+
+        }
+        if(buffer[0]=='A' && buffer[1]=='n' && buffer[2]=='a')
+        {
+            printf("AnaPico %d\n",1);
+            return 2;
+
+        }
+        else
+        {
+            printf("STRANGE DEVICE%d\n",1);
+            return 44;
+        }
+        return 0;
+
+        //float myfl = atof(buffer); // explicit type casting
         //  return myfl;
 }
 
@@ -698,7 +718,7 @@ void scan_port()
                 int result_gen;
                 //printf("scaning\n");
 
-                for(int i=100;i<200;i++)
+                for(int i=152;i<200;i++)
                 {
                         // printf("scaning1\n");
 
@@ -726,15 +746,60 @@ void scan_port()
                                 show_info_lcd();
                                 //return -1;
                                 }
-                                else
+                                /*if (result==1 && result_gen==-1)
                                 {
-                                        printf("WE ACTUALLY FIND IT!!!\n");
+                                    printf("WE ACTUALLY FIND IT!!!\n");
                                         put_info_in_global("IP ADR",str, "WE FIND IT");
                                         show_info_lcd();
                                         strcpy(str_for_connect,str);
-                                        for(int i=0;i<4;i++)
+                                        //TRY TO GET DATA FROM AGILENT!!
+                                        vagilant_check(s1,result);
+                                            int pribor = feedback_agilant_buf(s1);
+                                            if(pribor == 1)
+                                            {
+                                                first_initialization(s1,result);
+                                            }
+                                            if(pribor == 2)
+                                            {
+                                                smb100a_initialization(s1);
+                                            }
+                                }
+                                if (result==-1 && result_gen==1)
+                                {
+                                    printf("WE ACTUALLY FIND IT!!!\n");
+                                        put_info_in_global("IP ADR",str, "WE FIND IT");
+                                        show_info_lcd();
+                                        strcpy(str_for_connect,str);
+                                        //TRY TO GET DATA FROM AGILENT!!
+                                        vagilant_check(sgen,result);
+                                            int pribor = feedback_agilant_buf(sgen);
+                                            if(pribor == 1)
+                                            {
+                                                first_initialization(sgen,result);
+                                            }
+                                            if(pribor == 2)
+                                            {
+                                                smb100a_initialization(sgen);
+                                            }
+                                }*/
+                                else
+                                {
+                                // DODELAY RESHI VOPROS S  SOKETAMI
+                                        printf("HEY!!!\n");
+                                        put_info_in_global("IP ADR",str, "WE FIND IT");
+                                        show_info_lcd();
+                                        strcpy(str_for_connect,str);
+                                        vagilant_check(s1,result);
+                                            feedback_agilant_buf(s1);
+                                        //TRY TO GET DATA FROM AGILENT!!
+
+                                        /*for(int i=0;i<4;i++)
                                         {
+                                            vagilant_check(s,result);
+                                            feedback_agilant_buf(s);
                                             result = connect_adrs_port(s,port[i],str);
+                                            //printf("port is %s\n",port[i]);
+                                            //if(buff=="Agilent"){printf("Agilent kruto\n");vagilant_check(s1,result);}
                                             if(result==1)
                                             {
                                                 smb100a_check(sgen,result);
@@ -742,7 +807,7 @@ void scan_port()
                                                 // then we read buffer and compare it with  name that we have for agilent
                                                 // then we
                                             }
-                                        }
+                                        }*/
 
                                         //return 1;
                                 }
@@ -989,16 +1054,16 @@ int main(int argc, char * argv[])
 
 
 
-        //scan_port();
+        scan_port();
         //printf("%s\n", str_for_connect);
         // start thread for multimetr
         //printf("22GGGGGGGGGGGGG2\n");
-        pthread_create(&tid, NULL, multimetr_thread, (void *)&tid);
+        //pthread_create(&tid, NULL, multimetr_thread, (void *)&tid);
         //printf("22GGGGGGGGGGGGG2\n");
         //scan_port();
         //printf("end 1\n");
         // start thread for lcd
-        pthread_create(&tid2, NULL, lcd_thread, (void *)&tid2);
+        //pthread_create(&tid2, NULL, lcd_thread, (void *)&tid2);
         printf("end 2\n");
 
 
