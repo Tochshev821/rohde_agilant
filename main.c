@@ -95,11 +95,11 @@
 #define LCD_D7  0//21 //25
 #define encoder1A  13 // encoder 1
 #define encoder1B  6 // encoder 1
-#define encoder2A  2 // encoder 2
-#define encoder2B  3 // encoder 2
+#define encoder2A  17 // encoder 2
+#define encoder2B  27 // encoder 2
 
-#define button_1  4   //GPIO
-#define button_2  17  //GPIO
+//#define button_1  4   //GPIO
+//#define button_2  17  //GPIO
 
 #define false 1
 #define true 0
@@ -929,29 +929,30 @@ int main(int argc, char * argv[])
         system("gpio export 12 out");
         system("gpio export 1 out");
         system("gpio export 5 out");//25 or 0
-        system("gpio export 2 out");
-        system("gpio export 3 out");
-        system("gpio export 6 out");
-        system("gpio export 14 out");
+        //for encoders but useless probably
+        //system("gpio export 17 out");
+        //system("gpio export 27 out");
+        //system("gpio export 6 out");
+        //system("gpio export 13 out");
 
 
         system("gpio export 26 out");
 
         wiringPiSetupGpio();
 //printf(" LOLOLOKek  %d", 0);
-        /*
+
         pinMode(encoder1A, INPUT);
         pinMode(encoder1B, INPUT);
         pinMode(encoder2A, INPUT);
         pinMode(encoder2B, INPUT);
-        pinMode( button_1,INPUT);
-        pinMode( button_2,INPUT);
+//        pinMode( button_1,INPUT);
+//        pinMode( button_2,INPUT);
 
         wiringPiISR(encoder1A, INT_EDGE_BOTH, &interrupt1);
         wiringPiISR(encoder1B, INT_EDGE_BOTH, &interrupt1);
         wiringPiISR(encoder2A, INT_EDGE_BOTH, &interrupt2);
         wiringPiISR(encoder2B, INT_EDGE_BOTH, &interrupt2);
-        wiringPiISR(button_1, INT_EDGE_RISING, &interrupt_butt);*/
+//        wiringPiISR(button_1, INT_EDGE_RISING, &interrupt_butt);
 
 
     // DISPLAY
@@ -964,7 +965,7 @@ int main(int argc, char * argv[])
 
 
 
-/*
+
         unsigned char symb0[8] ={0x06,0x09,0x09,0x06,0x00,0x00,0x00,0x00};
         unsigned char symb1[8] ={0x08,0x08,0x08,0x08,0x00,0x00,0x00,0x00};
         unsigned char symb2[8] ={0x0A,0x0A,0x0A,0x0A,0x00,0x00,0x00,0x00 };
@@ -974,7 +975,7 @@ int main(int argc, char * argv[])
         lcdCharDef(flcd,0x03,symb2);
 
         canutil();
-*/
+
 
 ////////////////////
 ////////////
@@ -997,7 +998,7 @@ int main(int argc, char * argv[])
         //scan_port();
         //printf("end 1\n");
         // start thread for lcd
-        //pthread_create(&tid2, NULL, lcd_thread, (void *)&tid2);
+        pthread_create(&tid2, NULL, lcd_thread, (void *)&tid2);
         printf("end 2\n");
 
 
@@ -1025,7 +1026,7 @@ int main(int argc, char * argv[])
 
 while(1)
 {
-    delay2(2000);
+    delay2(5000);
      pinMode (26, OUTPUT) ;
        digitalWrite (26, HIGH);
 
